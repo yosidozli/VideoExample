@@ -81,6 +81,7 @@ public class LoginViewModel extends ViewModel implements Observer<Result<User>> 
         if (result instanceof Result.Success) {
             User data = ((Result.Success<User>) result).getData();
             loginResult.postValue(new LoginResult(new LoggedInUserView(data.userId)));
+            resultLiveData.removeObserver(this);
         } else {
             loginResult.postValue(new LoginResult(R.string.login_failed));
         }
