@@ -27,13 +27,13 @@ public abstract class AppDatabase extends RoomDatabase {
                 Executors.newSingleThreadScheduledExecutor().execute(() -> {
                             AppDao appDao = getInstance(context).appDao();
                             appDao.insertVideo( new VideoEntity(UUID.randomUUID().toString(),
-                                    R.raw.a,"a"));
+                                    R.raw.a,"title a"));
                             appDao.insertVideo( new VideoEntity(UUID.randomUUID().toString(),
-                                    R.raw.b,"b"));
+                                    R.raw.b,"title b"));
                             appDao.insertVideo(new VideoEntity(UUID.randomUUID().toString(),
-                                    R.raw.c,"c"));
+                                    R.raw.c,"title c"));
                             appDao.insertVideo(new VideoEntity(UUID.randomUUID().toString(),
-                                    R.raw.d,"d"));
+                                    R.raw.d,"title d"));
                 }
                 );
 

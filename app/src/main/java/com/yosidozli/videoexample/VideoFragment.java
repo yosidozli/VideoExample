@@ -19,7 +19,7 @@ import com.yosidozli.videoexample.data.AppDao;
 import com.yosidozli.videoexample.data.AppDatabase;
 import com.yosidozli.videoexample.data.model.VideoEntity;
 import com.yosidozli.videoexample.databinding.FragmentVideoListBinding;
-import com.yosidozli.videoexample.placeholder.VideosItems;
+
 
 import org.jetbrains.annotations.NotNull;
 
@@ -85,6 +85,5 @@ public class VideoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         AppDao appDao =  AppDatabase.getInstance(getActivity().getApplicationContext()).appDao();
         appDao.getAllVideos().observe(getViewLifecycleOwner(), videoEntities -> binding.list.setAdapter(new VideosRecyclerViewAdapter(videoEntities)));
-
     }
 }

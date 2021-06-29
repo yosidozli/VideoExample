@@ -26,7 +26,7 @@ public interface  AppDao {
     public void insertVideo(VideoEntity videos);
 
     @Query("SELECT * FROM users WHERE userId = :userId AND password = :password")
-    public User getUser(String userId, String password);
+    public LiveData<User> getUser(String userId, String password);
 
     @Transaction
     @Query("SELECT * FROM videos INNER JOIN users WHERE userId = :userId ")

@@ -1,6 +1,10 @@
 package com.yosidozli.videoexample.data;
 
 
+import androidx.arch.core.util.Function;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
+
 import com.yosidozli.videoexample.data.model.User;
 
 /**
@@ -44,12 +48,15 @@ public class LoginRepository {
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public Result<User> login(String username, String password) {
+    public LiveData<Result<User>> login(String username, String password) {
         // handle login
-        Result<User> result = dataSource.login(username, password);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<User>) result).getData());
-        }
-        return result;
+        return Transformations.map(dataSource.login(username, password), result -> {
+            if (result instanceof Result.Success) {
+                setLoggedInUser(((Result.Success<User>) result).getData());
+            }
+            return result;
+        });
+
+
     }
 }

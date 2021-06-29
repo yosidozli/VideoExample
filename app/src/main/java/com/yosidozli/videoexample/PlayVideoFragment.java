@@ -30,13 +30,13 @@ public class PlayVideoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        resourceId = PlayVideoFragmentArgs.fromBundle(getArguments()).getResourceId();
         binding = FragmentPlayVideoBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
@@ -52,7 +52,7 @@ public class PlayVideoFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Uri uri = RawResourceDataSource.buildRawResourceUri(R.raw.a);
+        Uri uri = RawResourceDataSource.buildRawResourceUri(resourceId);
         MediaItem mediaItem = MediaItem.fromUri(uri);
         player.setMediaItem(mediaItem);
         player.prepare();

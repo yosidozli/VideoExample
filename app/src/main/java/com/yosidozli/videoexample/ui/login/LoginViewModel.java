@@ -4,6 +4,7 @@ import android.util.Patterns;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.yosidozli.videoexample.R;
@@ -11,11 +12,12 @@ import com.yosidozli.videoexample.data.LoginRepository;
 import com.yosidozli.videoexample.data.Result;
 import com.yosidozli.videoexample.data.model.User;
 
-public class LoginViewModel extends ViewModel {
+public class LoginViewModel extends ViewModel implements Observer<Result<User>> {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
+    private LiveData<Result<User>> resultLiveData;
 
     LoginViewModel(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
@@ -31,15 +33,14 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        Result<User> result = loginRepository.login(username, password);
-
-        if (result instanceof Result.Success) {
-            User data = ((Result.Success<User>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.userId)));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
+        if (resultLiveData != null){
+            resultLiveData.removeObserver(this);
         }
+        resultLiveData = loginRepository.login(username, password);
+        resultLiveData.observeForever(this);
+
     }
+
 
     public void loginDataChanged(String username, String password) {
         if (!isUserNameValid(username)) {
@@ -66,5 +67,22 @@ public class LoginViewModel extends ViewModel {
     // A placeholder password validation check
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() > 5;
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        if(resultLiveData != null)
+            resultLiveData.removeObserver(this);
+    }
+
+    @Override
+    public void onChanged(Result<User> result) {
+        if (result instanceof Result.Success) {
+            User data = ((Result.Success<User>) result).getData();
+            loginResult.postValue(new LoginResult(new LoggedInUserView(data.userId)));
+        } else {
+            loginResult.postValue(new LoginResult(R.string.login_failed));
+        }
     }
 }
